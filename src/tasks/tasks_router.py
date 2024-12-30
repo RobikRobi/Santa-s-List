@@ -1,62 +1,49 @@
-# from fastapi import APIRouter, Depends, Request
-# from sqlalchemy.ext.asyncio import AsyncSession
-# from sqlalchemy import select
-# from fastapi.responses import HTMLResponse
-# from fastapi.templating import Jinja2Templates
-# from fastapi.staticfiles import StaticFiles
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
-# from .tasks_models import Tasks
-# from .tasks_shema import TaskCreateSchema, TaskUpdate, TasksPydantic
-# from ..db import get_session
+from .tasks_models import Tasks
+from .tasks_shema import TaskCreateSchema, TaskUpdate, TasksPydantic
+from ..db import get_session
 
 
-# app = APIRouter(prefix="/episodes", tags=["Episodes"])
+app = APIRouter(prefix="/tasks", tags=["Tasks"])
 
-# templates = Jinja2Templates(directory="src/templates")
-# app.mount("/static", StaticFiles(directory="src/static"), name="static")
-
-# # список задач
-# @app.get("/", response_model=TasksPydantic, response_class=HTMLResponse)
-# async def list_products(request: Request, session: AsyncSession = Depends(get_session)):
-#     tasks = await session.scalars(select(Tasks))
-#     tasks = tasks.all()
-#     context = {
-#         "request": request,
-#         "title": "Ваши задачи",
-#         "tasks": tasks
-# }
-#     return templates.TemplateResponse("index.html", context=context)
+# список задач
+@app.get("/", response_model=TasksPydantic)
+async def list_products(session: AsyncSession = Depends(get_session)):
+    tasks = await session.scalars(select(Tasks))
+    tasks = tasks.all()
+    return tasks
     
-# # добавление задачи
-# @app.get("/task-add", response_class=HTMLResponse)
-# async def add_product(request: Request):
-#     context = {
-#     "request": request,
-#     "title": "Добавление задачи"
-#     }
-#     return templates.TemplateResponse("index.html", context=context)
+# добавление задачи
+@app.post("/addtask")
+async def add_task(task_create=TaskCreateSchema, session: AsyncSession = Depends(get_session)):
+    task_data = Tasks(task=task_create.task, status=task_create.status, label=task_create.label)
+    await session.add(task_data)
+    await session.commit()
+    await session.refresh(task_data)
+    return task_data
 
-# @app.post("/task-add", response_class=HTMLResponse)
-# async def add_product(request: Request, session: AsyncSession = Depends(get_session)):
-#     form = await request.form()
-#     form_data = form._dict
-#     price = int(form_data["price"])
-#     product = Tasks(task=form_data["task"], price=price, description=form_data["description"])
-    
-#     try:
-#         session.add(product)
-#         await session.commit()
-#         context = {
-#             "request": request,
-#             "title": "Продукт успешно добавлен",
-#             "message": "Продукт был успешно добавлен."
-#         }
-#         return templates.TemplateResponse("productadd.html", context=context)
-#     except Exception as e:
-#         print(f"Error saving product to the database: {e}")
-#         context = {
-#             "request": request,
-#             "title": "Ошибка при добавлении продукта",
-#             "error_message": "Произошла ошибка при добавлении продукта. Попробуйте снова позже."
-#         }
-#         return templates.TemplateResponse("productadd.html", context=context)
+# редактирование задачи
+# @app.put("/{task_id}/put")
+# def task_put(task_id: int, task_update: TaskUpdate, session: AsyncSession = Depends(get_session)):
+#     task_data = session.scalar(select(Tasks).filter(Tasks.id == task_id))
+#     if not task_data:
+#         raise HTTPException(status_code=404, detail="Task not found")
+
+#     task_data = task_update.task
+#     session.commit()
+#     session.refresh(task_data)
+
+#     return {"message": f"Deposit of {account_update.balance} to account {account_id}"}
+
+# удаление задачи
+@app.delete("/deltask/{task_id}")
+async def delete_task(task_id: int, session: AsyncSession = Depends(get_session)):
+    task_data = await session.scalar(select(Tasks).filter(Tasks.id == task_id))
+    if not task_data:
+        raise HTTPException(status_code=404, detail="Task not found")
+    await session.delete(task_data)
+    await session.commit()
+    return {"message": f"Task with ID {task_id} delete"}

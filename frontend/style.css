@@ -1,0 +1,130 @@
+.kanit-extralight {
+    font-family: "Kanit", serif;
+    font-weight: 200;
+    font-style: normal;
+  }
+
+body {
+    width: 100%;
+    background: linear-gradient(135deg, rgb(51, 180, 202), rgb(60, 227, 171));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.base {
+    width: 100%;
+    max-width: 540px;
+    background: #fff;
+    padding: 40px 30px 70px;
+    border-radius: 10px;
+}
+
+.base h1 {
+    color: black;
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #b9b6b6;
+    border-radius: 30px;
+    padding-left: 20px;
+    margin-bottom: 25px;
+}
+
+input {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px;
+    flex: 1;
+}
+
+button {
+    border: none;
+    outline: none;
+    padding: 15px 50px;
+    background: #ff5945;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    border-radius: 40px;
+}
+
+ul li {
+    list-style: none;
+    font-size: 15px;
+    padding: 12px 8px 12px 50px;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+ul li::before {
+    content: '';
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background-image: url(pins/acetone-20241230-164139-805.png);
+    background-size: cover;
+    background-position: center;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+
+ul li.checked {
+    color: #555;
+    text-decoration: line-through;
+}
+
+ul li.checked::before {
+    background-image: url(pins/acetone-20241230-16436-547.png);
+}
+
+ul li .task-content {
+   display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+ul li span {
+     width: 40px;
+    height: 40px;
+    font-size: 22px;
+    line-height: 40px;
+    text-align: center;
+    
+}
+
+ul li span:hover {
+    background: #abaaaa;
+}
+ul li input[type="text"] {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px;
+}
+ul li .edit-button {
+    border: none;
+    outline: none;
+    background: #5cb85c;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+     padding: 5px 10px;
+     margin-right: 5px;
+}

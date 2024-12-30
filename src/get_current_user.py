@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from .db import get_session
 from .auth.auth_models import User
 from sqlalchemy import select
-from .auth.auth_models import valid_access_token
+from .auth.auth_utilits import valid_access_token
 
 bearer = HTTPBearer()
   
