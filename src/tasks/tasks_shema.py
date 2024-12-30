@@ -15,8 +15,8 @@ class TaskUpdate(BaseModel):
 
 class TasksPydantic(BaseModel):
     id: int
-    name: str
-    price: int
-    description: str
+    task: str
+    status: bool
+    label: LabelEnum = LabelEnum.PERSONAL
 
     model_config = ConfigDict(from_attributes=True, use_enum_values=True)
